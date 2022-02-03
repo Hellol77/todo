@@ -20,42 +20,21 @@
   </head>
   <body>
     <%- include('nav.html') %>
-
-    <h4 class="ml-2 my-3 text-center">할 일 리스트</h4>
-
-    <div class="container">
-      <ul class="list-group">
-        <% for (var i = 0; i < posts.length; i++){ %>
-        <li class="list-group-item">
-          <p>글 번호 : <%= posts[i]._id %></p>
-          <h4>할 일 제목 : <%= posts[i].할일 %></h4>
-          <p>날짜 : <%= posts[i].날짜 %></p>
-          <button class="btn btn-danger delete" data-id="<%= posts[i]._id %>">
-            삭제
-          </button>
-        </li>
-        <% } %>
-      </ul>
+    <div class="container mt-4">
+      <h4 class="text-center">상세페이지</h4>
+      <div class="card" style="width: 100%">
+        <div class="card-body">
+          <h5 class="card-title"><%= data.할일 %></h5>
+          <h6 class="card-subtitle mb-2 text-muted"><%= data.날짜 %></h6>
+          <p class="card-text">
+            Some quick example text to build on the card title and make up the
+            bulk of the card's content.
+          </p>
+          <a href="#" class="card-link">수정하기</a>
+        </div>
+      </div>
     </div>
     <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
-    <script>
-      $(".delete").click(function (e) {
-        var 글번호 = e.target.dataset.id;
-        var 지금누른거 = $(this);
-        $.ajax({
-          method: "DELETE",
-          url: "/delete",
-          data: { _id: 글번호 },
-        })
-          .done(function (결과) {
-            console.log("성공");
-            지금누른거.parent("li").fadeOut();
-          })
-          .fail(function (xhr, textStatus, errorThrown) {
-            console.log("실패");
-          });
-      });
-    </script>
 
     <!-- Optional JavaScript; choose one of the two! -->
 
