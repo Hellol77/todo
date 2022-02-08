@@ -174,3 +174,11 @@ passport.deserializeUser(function (아이디, done) {
     done(null, 결과);
   });
 });
+
+app.get("/search", (요청, 응답) => {
+  //요청.query에 정보가 담겨있다.
+  db.collection("post").find({ 할일: 요청.query.value }).toArray((에러,결과)=>{ 
+  //결과 에 찾은 게시물을 보여준다.
+  응답.render('search.ejs',{posts:결과})
+  });
+});
