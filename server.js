@@ -241,3 +241,24 @@ app.post("/upload", upload.single("프로필"), function (요청, 응답) {
 app.get("/image/:imageName", function (요청, 응답) {
   응답.sendFile(__dirname + "/public/image/" + 요청.params.imageName);
 });
+
+const { ObjectId } = require("mongodb"); //오브젝트아이디 만들기 위해서
+
+app.post("/chatroom", 로그인확인, function (요청, 응답) {
+  var 저장할거 = {
+    title: "무슨채팅방",
+    member: [ObjectId(요청.body.당한사람id), 요청.user._id],
+    date: new Date(),
+  };
+
+  db.collection("chatroom")
+    .insertOne(저장할거)
+    .then((결과) => {
+      //콜백함수 insert가 성공했을시 실행되는
+      응답.send("성공");
+    });
+});
+
+app.get("/chat", function (요청,응답) {
+  응답.render("chat.ejs");
+});
