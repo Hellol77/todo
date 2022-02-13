@@ -259,6 +259,26 @@ app.post("/chatroom", 로그인확인, function (요청, 응답) {
     });
 });
 
-app.get("/chat", function (요청,응답) {
-  응답.render("chat.ejs");
+app.get("/chat", 로그인확인, function (요청, 응답) {
+  db.collection("chatroom")
+    .find({ member: 요청.user._id })
+    .toArray()
+    .then((결과) => {
+      응답.render("chat.ejs", { data: 결과 });
+    }); //array에서 하나 찾기 가능
+});
+
+app.post("/message", 로그인확인, (요청, 응답) => {
+  var 저장할거 = {
+    parent: 요청.body.parent,
+    content: 요청.body.content,
+    userid: 요청.user._id,
+    date: new Date(),
+  };
+
+  db.collection("message")
+    .insertOne(저장할거)
+    .then(() => {console.log('저장성공')}).catch(()=>{
+      console.log(실패)
+    });
 });

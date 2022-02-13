@@ -24,39 +24,52 @@
     <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
     <h4 class="ml-2 my-3 text-center">채팅방</h4>
     <div class="container p-4 detail">
+      <div class="row">
+        <div class="col-3">
+          <ul class="list-group chat-list">
+          <% for(var i =0;i<data.length;i++){ %> 
+            <li class="list-group-item" data-id="<%= data[i].title  %> ">
+              <h6><%= data[i].title %></h6>
+              <h6 class="text-small"><%= data[i].member[0] %> </h6>
+            </li>
+            <% } %> 
+            
+          </ul>
+        </div>
 
-		<div class="row">
-		  <div class="col-3">
-			<ul class="list-group chat-list">
-			  <li class="list-group-item" data-id="">
-				<h6>채팅방1</h6>
-				<h6 class="text-small">채팅방설명</h6>
-			  </li>
-			  <li class="list-group-item">
-				 <h6>채팅방2</h6>
-				 <h6 class="text-small">채팅방설명</h6>
-			   </li>
-			 </ul>
-		   </div>
-	  
-		   <div class="col-9 p-0">
-			 <div class="chat-room">
-				<ul class="list-group chat-content">
-				  <li><span class="chat-box">채팅방1 내용</span></li>
-				  <li><span class="chat-box">채팅방1 내용</span></li>
-				  <li><span class="chat-box mine">채팅방1 내용</span></li>
-				</ul>
-			  <div class="input-group">
-				<input class="form-control" id="chat-input">
-				<button class="btn btn-secondary" id="send">전송</button>
-			  </div>
-			</div>
-		  </div>
-		</div>
-	  
-	  </div> 
-
-
+        <div class="col-9 p-0">
+          <div class="chat-room">
+            <ul class="list-group chat-content">
+              <li><span class="chat-box">채팅방1 내용</span></li>
+              <li><span class="chat-box">채팅방1 내용</span></li>
+              <li><span class="chat-box mine">채팅방1 내용</span></li>
+            </ul>
+            <div class="input-group">
+              <input class="form-control" id="chat-input" />
+              <button class="btn btn-secondary" id="send">전송</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <script>
+		var 지금누른채팅방id;
+    	$('.list-group-item').click(function(){
+			지금누른채팅방id = this.dataset.id;
+    	})
+		$('#send').click(function(){
+			var 채팅내용 = $('#chat-input').val();
+			var 보낼거 = {
+			parent : 지금누른채팅방id, //부모게시물은 
+			content : 채팅내용,
+			}
+			$.post('message',보낼거).then(()=>{
+			console.log('전송성공')
+			})
+		})
+		
+		
+	</script>
 
     <!-- Optional JavaScript; choose one of the two! -->
 
