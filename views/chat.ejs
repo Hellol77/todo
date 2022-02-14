@@ -28,7 +28,7 @@
         <div class="col-3">
           <ul class="list-group chat-list">
           <% for(var i =0;i<data.length;i++){ %> 
-            <li class="list-group-item" data-id="<%= data[i].title  %> ">
+            <li class="list-group-item" data-id="<%= data[i]._id %>">
               <h6><%= data[i].title %></h6>
               <h6 class="text-small"><%= data[i].member[0] %> </h6>
             </li>
@@ -40,8 +40,6 @@
         <div class="col-9 p-0">
           <div class="chat-room">
             <ul class="list-group chat-content">
-              <li><span class="chat-box">채팅방1 내용</span></li>
-              <li><span class="chat-box">채팅방1 내용</span></li>
               <li><span class="chat-box mine">채팅방1 내용</span></li>
             </ul>
             <div class="input-group">
@@ -54,9 +52,27 @@
     </div>
     <script>
 		var 지금누른채팅방id;
+		var eventSource;
     	$('.list-group-item').click(function(){
 			지금누른채팅방id = this.dataset.id;
-    	})
+			$('.chat-content').html();
+			if(eventSource !=undefined){
+			eventSource.close();
+			
+			}
+			
+			eventSource= new EventSource('/message/'+지금누른채팅방id);
+			eventSource.addEventListener('test',function(e){ //서버가 보낸것을 수신하고 싶으면 이벤트리스너
+				var 가져온거=JSON.parse(e.data);//따음표 제거 parse
+				가져온거.forEach(function(i){
+				$('.chat-content').append('<li><span class="chat-box">'+i.content+'</span></li>');
+				})
+				
+				
+				
+				
+			});
+    	});
 		$('#send').click(function(){
 			var 채팅내용 = $('#chat-input').val();
 			var 보낼거 = {
@@ -64,9 +80,9 @@
 			content : 채팅내용,
 			}
 			$.post('message',보낼거).then(()=>{
-			console.log('전송성공')
-			})
-		})
+			console.log('전송성공');
+			});
+		});
 		
 		
 	</script>

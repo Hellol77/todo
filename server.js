@@ -1,5 +1,10 @@
 const express = require("express");
 const app = express();
+
+const http = require('http').createServer(app); //socket.io
+const { Server } = require("socket.io");
+const io = new Server(http);
+
 app.use(express.urlencoded({ extended: true }));
 const MongoClient = require("mongodb").MongoClient;
 var db;
@@ -270,7 +275,7 @@ app.get("/chat", 로그인확인, function (요청, 응답) {
 
 app.post("/message", 로그인확인, (요청, 응답) => {
   var 저장할거 = {
-    parent: 요청.body.parent,
+    parent: ObjectId(요청.body.parent),
     content: 요청.body.content,
     userid: 요청.user._id,
     date: new Date(),
@@ -278,7 +283,33 @@ app.post("/message", 로그인확인, (요청, 응답) => {
 
   db.collection("message")
     .insertOne(저장할거)
-    .then(() => {console.log('저장성공')}).catch(()=>{
-      console.log(실패)
+    .then(() => {
+      console.log("저장성공");
     });
+});
+
+app.get("/message/:parentid", 로그인확인, function (요청, 응답) {
+  응답.writeHead(200, {
+    Connection: "keep-alive",
+    "Content-Type": "text/event-stream",
+    "Cache-Control": "no-cache",
+  });
+  db.collection("message")
+    .find({ parent: ObjectId(요청.params.parentid) })
+    .toArray() //모든 메세지 찾기
+    .then((결과) => {
+      console.log(결과);
+      응답.write("event: test\n");
+      응답.write("data:" + JSON.stringify(결과) + "\n\n"); //array라서 문자로 바꾼다음 전송해야한다.
+    });
+  const 찾을문서 = [
+    { $match: { "fullDocument.parent": ObjectId(요청.params.parentid) } },
+  ]; //무조건 fullDocument붙이기
+
+  const changeStream = db.collection("message").watch(찾을문서);
+
+  changeStream.on("change", (result) => {
+    응답.write("event:test\n");
+    응답.write("data:" + JSON.stringify([result.fullDocument]) + "\n\n");
+  });
 });
