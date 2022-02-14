@@ -58,22 +58,16 @@
 			$('.chat-content').html();
 			if(eventSource !=undefined){
 			eventSource.close();
-			
 			}
-			
-			eventSource= new EventSource('/message/'+지금누른채팅방id);
-			eventSource.addEventListener('test',function(e){ //서버가 보낸것을 수신하고 싶으면 이벤트리스너
+			  eventSource= new EventSource('/message/'+지금누른채팅방id);
+			  eventSource.addEventListener('test',function(e){ //서버가 보낸것을 수신하고 싶으면 이벤트리스너
 				var 가져온거=JSON.parse(e.data);//따음표 제거 parse
 				가져온거.forEach(function(i){
 				$('.chat-content').append('<li><span class="chat-box">'+i.content+'</span></li>');
 				})
-				
-				
-				
-				
-			});
+			  });
     	});
-		$('#send').click(function(){
+		  $('#send').click(function(){
 			var 채팅내용 = $('#chat-input').val();
 			var 보낼거 = {
 			parent : 지금누른채팅방id, //부모게시물은 

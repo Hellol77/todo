@@ -1,7 +1,7 @@
 const express = require("express");
 const app = express();
 
-const http = require('http').createServer(app); //socket.io
+const http = require("http").createServer(app); //socket.io
 const { Server } = require("socket.io");
 const io = new Server(http);
 
@@ -17,8 +17,24 @@ MongoClient.connect(process.env.DB_URL, function (에러, client) {
   if (에러) return console(에러);
   db = client.db("todo");
 
-  app.listen(process.env.PORT, function () {
+  http.listen(process.env.PORT, function () {
     console.log("listening on 8080");
+  });
+  app.get("/socket", function (요청, 응답) {
+    //socket.io
+    응답.render("socket.ejs");
+  });
+  io.on("connection", function (socket) {
+    console.log("접속됨");
+    socket.on("room1-send", function () {
+      io.to("room1").emit("broadcast", data);
+    });
+    socket.on("joinroom", function (data) {
+      socket.join("room1"); //채팅방 1 에 입장시킨다.
+    });
+    socket.on("user-send", function (data) {
+      io.emit("broadcast", data);
+    });
   });
   app.get("/", function (요청, 응답) {
     // 응답.sendFile(__dirname + "/views/index.ejs");
